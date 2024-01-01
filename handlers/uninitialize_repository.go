@@ -1,16 +1,13 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func UninitializeRepository(w http.ResponseWriter, r *http.Request) {
-	statusCode := http.StatusOK
-
-	w.WriteHeader(statusCode)
-
-	json.NewEncoder(w).Encode(map[string]string{
+func UninitializeRepository(c *gin.Context) {
+	c.JSON(http.StatusOK, map[string]string{
 		"repository_id": "id1",
 	})
 }

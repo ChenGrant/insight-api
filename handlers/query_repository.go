@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type FileMatch struct {
@@ -12,12 +13,8 @@ type FileMatch struct {
 	Content   string `json:"content"`
 }
 
-func QueryRepository(w http.ResponseWriter, r *http.Request) {
-	statusCode := http.StatusOK
-
-	w.WriteHeader(statusCode)
-
-	json.NewEncoder(w).Encode([]FileMatch{
+func QueryRepository(c *gin.Context) {
+	c.JSON(http.StatusOK, []FileMatch{
 		{
 			Path:      "/server/src/config/database.js",
 			StartLine: 3,

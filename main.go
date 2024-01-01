@@ -4,12 +4,10 @@ import (
 	"fmt"
 	"insight-api/config"
 	"insight-api/handlers"
-	"insight-api/middleware/loggers"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -20,14 +18,15 @@ func main() {
 		log.Printf("ENV=%s", env)
 	}
 
-	router := mux.NewRouter()
-	router.HandleFunc("/initialize_repository", loggers.HTTPLog(handlers.InitializeRepository)).Methods("POST")
-	router.HandleFunc("/query_repository", loggers.HTTPLog(handlers.QueryRepository)).Methods("GET")
-	router.HandleFunc("/reinitialize_repository", loggers.HTTPLog(handlers.ReinitializeRepository)).Methods("PUT")
-	router.HandleFunc("/uninitialize_repository", loggers.HTTPLog(handlers.UninitializeRepository)).Methods("DELETE")
-	router.HandleFunc("/validate_repository_id", loggers.HTTPLog(handlers.ValidateRepositoryId)).Methods("POST")
+	router := gin.Default()
+
+	router.POST("/initialize_repository", handlers.InitializeRepository)
+	router.GET("/query_repository", handlers.QueryRepository)
+	router.PUT("/reinitialize_repository", handlers.ReinitializeRepository)
+	router.DELETE("/uninitialize_repository", handlers.UninitializeRepository)
+	router.POST("/validate_repository_id", handlers.ValidateRepositoryId)
 
 	address := fmt.Sprintf("%s:%s", os.Getenv("DOMAIN"), os.Getenv("PORT"))
 	log.Printf("Server running on %s", address)
-	log.Fatal(http.ListenAndServe(address, router))
+	log.Fatal(router.Run(address))
 }
